@@ -53,8 +53,9 @@ public class Player : MonoBehaviour
             Vector3.Slerp(forward, rotateTarget, rotateSpeed * Time.deltaTime);
 
         // アニメーターのMoveSpeedパラメータに Rigidbody の移動速度の大きさを与える
-        animator.SetFloat("MoveSpeed", rb.linearVelocity.magnitude); Vector3.Slerp(forward, rotateTarget, rotateSpeed * Time.deltaTime);
-
+        Vector3 velocityXZ = rb.linearVelocity;
+        velocityXZ.y = 0;
+        animator.SetFloat("MoveSpeed", velocityXZ.magnitude);
 
         // ジャンプ
         if (playerInput.actions["Jump"].WasPressedThisFrame())
