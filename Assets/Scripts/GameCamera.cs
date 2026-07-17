@@ -20,6 +20,11 @@ public class GameCamera : MonoBehaviour
 
     void Update()
     {
+        if (playerInput == null || lookTarget == null)
+        {
+            return;
+        }
+
         var lookVec = playerInput.actions["Look"].ReadValue<Vector2>();
         yaw += lookVec.x * rotateSpeed * Time.deltaTime;
         pitch -= lookVec.y * rotateSpeed * Time.deltaTime;

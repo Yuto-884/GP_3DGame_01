@@ -12,6 +12,14 @@ public class Player : MonoBehaviour
     [SerializeField] float airDamping = 0.5f;
 
     [SerializeField] GameObject firePrefab;
+    [SerializeField] float fireSpeed = 20f;
+    [SerializeField] Vector3 fireOffset;
+
+    [SerializeField] int hp = 5;
+    [SerializeField] float invincibleTimeMax = 0.5f;
+    [SerializeField] float knockbackPower = 10f;
+
+    float invincibleTime = 0f;
 
     PlayerInput playerInput;
     Rigidbody rb;
@@ -47,6 +55,16 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        if (playerInput == null)
+        {
+            return;
+        }
+
+        if (invincibleTime > 0)
+        {
+            invincibleTime -= Time.deltaTime;
+        }
+
         if (isGrounded)
         {
             var accelVec = playerInput.actions["Move"].ReadValue<Vector2>();
@@ -95,15 +113,53 @@ public class Player : MonoBehaviour
             Vector3 jumpVec = new Vector3(0, jumpSpeed, 0);
             rb.AddForce(jumpVec, ForceMode.VelocityChange);
         }
+
+        // 攻撃
+        if (playerInput.actions["Attack"].WasPressedThisFrame())
+        {
+            var position = transform.position + transform.TransformVector(fireOffset);
+            var fireObj = Object.Instantiate(firePrefab, position, transform.rotation);
+            var fireRB = fireObj.GetComponent<Rigidbody>();
+            if (fireRB != null)
+            {
+                fireRB.linearVelocity = transform.forward * fireSpeed;
+            }
+        }
     }
 
     void OnCollisionStay(Collision collision)
     {
+        // 地面判定
         foreach (var contact in collision.contacts)
         {
             if (contact.normal.y >= groundNormalYMin)
             {
                 isGrounded = true;
+            }
+        }
+
+        // 攻撃判定
+        AttackObject attackObj = collision.gameObject.GetComponent<AttackObject>();
+
+        if (attackObj != null && invincibleTime <= 0)
+        {
+            // ダメージ
+            hp -= attackObj.power;
+
+            // 無敵時間開始
+            invincibleTime = invincibleTimeMax;
+
+            // ノックバック
+            Vector3 dir = transform.position - collision.transform.position;
+            dir.y = 0;
+
+            rb.AddForce(dir.normalized * knockbackPower,
+                        ForceMode.Acceleration);
+
+            // HPが0なら死亡
+            if (hp <= 0)
+            {
+                Destroy(gameObject);
             }
         }
     }
