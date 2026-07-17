@@ -15,11 +15,11 @@ public class Player : MonoBehaviour
     [SerializeField] float fireSpeed = 20f;
     [SerializeField] Vector3 fireOffset;
 
-    [SerializeField] int hp = 5;
+    [SerializeField] int hp = 10;
     [SerializeField] float invincibleTimeMax = 0.5f;
-    [SerializeField] float knockbackPower = 10f;
+    [SerializeField] float knockbackSpeed = 10;
 
-    float invincibleTime = 0f;
+    float invincibleTime = 0;
 
     PlayerInput playerInput;
     Rigidbody rb;
@@ -129,7 +129,6 @@ public class Player : MonoBehaviour
 
     void OnCollisionStay(Collision collision)
     {
-        // 地面判定
         foreach (var contact in collision.contacts)
         {
             if (contact.normal.y >= groundNormalYMin)
@@ -138,29 +137,21 @@ public class Player : MonoBehaviour
             }
         }
 
-        // 攻撃判定
-        AttackObject attackObj = collision.gameObject.GetComponent<AttackObject>();
-
+        var attackObj = collision.gameObject.GetComponent<AttackObject>();
         if (attackObj != null && invincibleTime <= 0)
         {
-            // ダメージ
             hp -= attackObj.power;
-
-            // 無敵時間開始
             invincibleTime = invincibleTimeMax;
-
-            // ノックバック
-            Vector3 dir = transform.position - collision.transform.position;
-            dir.y = 0;
-
-            rb.AddForce(dir.normalized * knockbackPower,
-                        ForceMode.Acceleration);
-
-            // HPが0なら死亡
             if (hp <= 0)
             {
                 Destroy(gameObject);
             }
+
+            // ノックバック
+            var dir = transform.position - collision.transform.position;
+            dir.y = 0;
+            var knockbackVec = dir.normalized * knockbackSpeed;
+            rb.AddForce(knockbackVec, ForceMode.VelocityChange);
         }
     }
 }
