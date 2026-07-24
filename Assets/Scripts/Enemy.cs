@@ -79,6 +79,8 @@ public class Enemy : MonoBehaviour
             invincibleTime = invincibleTimeMax;
             if (hp <= 0)
             {
+                Debug.Log("Enemy Dead");
+                ScoreManager.Instance.AddScore(1);
                 Destroy(gameObject);
             }
 
