@@ -51,6 +51,11 @@ public class Player : MonoBehaviour
 
         // 毎フレーム一旦 false にする
         isGrounded = false;
+
+        if (rb.linearVelocity.y < 0)
+        {
+            rb.AddForce(Vector3.down * 20f, ForceMode.Acceleration);
+        }
     }
 
     void Update()
@@ -85,6 +90,7 @@ public class Player : MonoBehaviour
             {
                 rotateTarget = accelVec3D.normalized;
             }
+
         }
 
         // 前方向をコピー
@@ -105,7 +111,7 @@ public class Player : MonoBehaviour
         // アニメーション
         Vector3 velocityXZ = rb.linearVelocity;
         velocityXZ.y = 0;
-        animator.SetFloat("MoveSpeed", velocityXZ.magnitude);
+        animator.SetFloat("MoveSpeed", velocityXZ.magnitude );
 
         // ジャンプ
         if (playerInput.actions["Jump"].WasPressedThisFrame() && isGrounded)
@@ -119,6 +125,9 @@ public class Player : MonoBehaviour
         {
             var position = transform.position + transform.TransformVector(fireOffset);
             var fireObj = Object.Instantiate(firePrefab, position, transform.rotation);
+
+            fireObj.GetComponent<AttackObject>().owner = gameObject;
+
             var fireRB = fireObj.GetComponent<Rigidbody>();
             if (fireRB != null)
             {
@@ -138,7 +147,9 @@ public class Player : MonoBehaviour
         }
 
         var attackObj = collision.gameObject.GetComponent<AttackObject>();
-        if (attackObj != null && invincibleTime <= 0)
+        if (attackObj != null &&
+        attackObj.owner != gameObject &&
+        invincibleTime <= 0)
         {
             hp -= attackObj.power;
             invincibleTime = invincibleTimeMax;

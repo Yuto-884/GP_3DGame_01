@@ -6,6 +6,9 @@ public class AttackObject : MonoBehaviour
 
     [SerializeField] int hp = 2;
 
+    // Ç±ÇÃíeÇåÇÇ¡ÇΩêl
+    public GameObject owner;
+
     private void OnCollisionStay(Collision collision)
     {
         var attackObj = collision.gameObject.GetComponent<AttackObject>();
@@ -18,4 +21,5 @@ public class AttackObject : MonoBehaviour
             }
         }
     }
+
 }

@@ -273,3 +273,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AttackObject
   power: 1
   hp: 2
+  owner: {fileID: 0}

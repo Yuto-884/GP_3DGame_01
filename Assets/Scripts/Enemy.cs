@@ -20,6 +20,11 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+
+        if (playerCollider == null)
+        {
+            playerCollider = GameObject.FindWithTag("Player").GetComponent<Collider>();
+        }
     }
 
     // Update is called once per frame

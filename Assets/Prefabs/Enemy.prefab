@@ -108,7 +108,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   moveSpeed: 3
   rotateSpeed: 20
-  hp: 2
+  hp: 3
   invincibleTimeMax: 0.5
   knockbackSpeed: 5
 --- !u!54 &7602463623881363010
@@ -173,6 +173,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AttackObject
   power: 1
   hp: 2
+  owner: {fileID: 0}
 --- !u!1 &3471484697530605394
 GameObject:
   m_ObjectHideFlags: 0
