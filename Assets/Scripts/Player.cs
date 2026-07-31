@@ -21,6 +21,13 @@ public class Player : MonoBehaviour
     [SerializeField] float knockbackSpeed = 10;
     [SerializeField] TextMeshProUGUI hpText;
 
+    [SerializeField] int maxAmmo = 10;
+    [SerializeField] float reloadTime = 2f;
+    [SerializeField] TextMeshProUGUI ammoText;
+
+    int ammo;
+    float reloadTimer;
+
     float invincibleTime = 0;
 
     PlayerInput playerInput;
@@ -39,6 +46,9 @@ public class Player : MonoBehaviour
         rb.sleepThreshold = -1;
 
         hpText.text = "HP : " + hp;
+
+        ammo = maxAmmo;
+        UpdateAmmoUI();
     }
 
     void FixedUpdate()
@@ -125,17 +135,30 @@ public class Player : MonoBehaviour
         }
 
         // UŒ‚
-        if (playerInput.actions["Attack"].WasPressedThisFrame())
+        if (playerInput.actions["Attack"].WasPressedThisFrame() && ammo > 0)
         {
+            ammo--;
+            UpdateAmmoUI();
+
             var position = transform.position + transform.TransformVector(fireOffset);
-            var fireObj = Object.Instantiate(firePrefab, position, transform.rotation);
+            var fireObj = Instantiate(firePrefab, position, transform.rotation);
 
             fireObj.GetComponent<AttackObject>().owner = gameObject;
 
             var fireRB = fireObj.GetComponent<Rigidbody>();
-            if (fireRB != null)
+            fireRB.linearVelocity = transform.forward * fireSpeed;
+        }
+
+        if (ammo < maxAmmo)
+        {
+            reloadTimer += Time.deltaTime;
+
+            if (reloadTimer >= reloadTime)
             {
-                fireRB.linearVelocity = transform.forward * fireSpeed;
+                ammo++;
+                reloadTimer = 0;
+
+                UpdateAmmoUI();
             }
         }
     }
@@ -160,6 +183,8 @@ public class Player : MonoBehaviour
             invincibleTime = invincibleTimeMax;
             if (hp <= 0)
             {
+                GameManager.Instance.GameOver();
+
                 Destroy(gameObject);
             }
 
@@ -169,5 +194,32 @@ public class Player : MonoBehaviour
             var knockbackVec = dir.normalized * knockbackSpeed;
             rb.AddForce(knockbackVec, ForceMode.VelocityChange);
         }
+    }
+
+    void UpdateAmmoUI()
+    {
+        string text = "Ammo : ";
+
+        for (int i = 0; i < maxAmmo; i++)
+        {
+            if (i < ammo)
+                text += "œ";
+            else
+                text += "›";
+        }
+
+        ammoText.text = text;
+    }
+
+    public void AddAmmo(int amount)
+    {
+        ammo += amount;
+
+        if (ammo > maxAmmo)
+        {
+            ammo = maxAmmo;
+        }
+
+        UpdateAmmoUI();
     }
 }

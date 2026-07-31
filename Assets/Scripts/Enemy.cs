@@ -80,7 +80,12 @@ public class Enemy : MonoBehaviour
             if (hp <= 0)
             {
                 Debug.Log("Enemy Dead");
+
                 ScoreManager.Instance.AddScore(1);
+
+                Player player = FindObjectOfType<Player>();
+                player.AddAmmo(1);
+
                 Destroy(gameObject);
             }
 
