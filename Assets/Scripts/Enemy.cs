@@ -54,7 +54,10 @@ public class Enemy : MonoBehaviour
             var subVec = playerCollider.bounds.center - rb.position;
             subVec.y = 0;
 
-            rb.linearVelocity = subVec.normalized * moveSpeed;
+            Vector3 velocity = subVec.normalized * moveSpeed;
+            velocity.y = rb.linearVelocity.y;
+
+            rb.linearVelocity = velocity;
 
             // プレイヤーの方向を向く
             var rotateTarget = subVec.normalized;

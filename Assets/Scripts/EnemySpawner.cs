@@ -25,14 +25,27 @@ public class EnemySpawner : MonoBehaviour
     void SpawnEnemy()
     {
         Vector3 pos = new Vector3(
-        Random.Range(-rangeX, rangeX),
-        50f,
-        Random.Range(-rangeZ, rangeZ)
-);
+            Random.Range(-rangeX, rangeX),
+            20f,
+            Random.Range(-rangeZ, rangeZ)
+        );
 
-        if (Physics.Raycast(pos, Vector3.down, out RaycastHit hit, 100f))
+        if (Physics.Raycast(pos, Vector3.down, out RaycastHit hit, 50f))
         {
-            Instantiate(enemyPrefab, hit.point, Quaternion.identity);
+            GameObject enemy = Instantiate(
+            enemyPrefab,
+            hit.point + Vector3.up * 5f,
+            Quaternion.identity
+        );
+
+            Debug.Log(enemy.transform.position);
+
+            Rigidbody rb = enemy.GetComponent<Rigidbody>();
+
+            if (rb != null)
+            {
+                rb.linearVelocity = Vector3.down * 10f;
+            }
         }
     }
 }
