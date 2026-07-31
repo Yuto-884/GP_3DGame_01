@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
 
 public class Player : MonoBehaviour
 {
@@ -18,6 +19,7 @@ public class Player : MonoBehaviour
     [SerializeField] int hp = 10;
     [SerializeField] float invincibleTimeMax = 0.5f;
     [SerializeField] float knockbackSpeed = 10;
+    [SerializeField] TextMeshProUGUI hpText;
 
     float invincibleTime = 0;
 
@@ -35,6 +37,8 @@ public class Player : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
 
         rb.sleepThreshold = -1;
+
+        hpText.text = "HP : " + hp;
     }
 
     void FixedUpdate()
@@ -152,6 +156,7 @@ public class Player : MonoBehaviour
         invincibleTime <= 0)
         {
             hp -= attackObj.power;
+            hpText.text = "HP : " + hp;
             invincibleTime = invincibleTimeMax;
             if (hp <= 0)
             {

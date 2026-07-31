@@ -8,6 +8,9 @@ public class Timer : MonoBehaviour
 
     [SerializeField] GameObject timeUpText;
 
+    [SerializeField] GameObject resultText;
+    [SerializeField] TextMeshProUGUI scoreResultText;
+
     void Update()
     {
         if (time > 0)
@@ -22,6 +25,10 @@ public class Timer : MonoBehaviour
         else
         {
             timeUpText.SetActive(true);
+
+            resultText.SetActive(true);
+            scoreResultText.text = "Score : " + ScoreManager.Instance.score;
+
             Time.timeScale = 0;
         }
     }
