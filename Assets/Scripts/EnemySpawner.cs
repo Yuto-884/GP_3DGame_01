@@ -5,6 +5,8 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] GameObject enemyPrefab;
 
     [SerializeField] float spawnInterval = 2f;
+    [SerializeField] float minSpawnInterval = 0.5f;
+    [SerializeField] float spawnSpeedUp = 0.1f;
 
     [SerializeField] float rangeX = 20f;
     [SerializeField] float rangeZ = 20f;
@@ -26,26 +28,27 @@ public class EnemySpawner : MonoBehaviour
     {
         Vector3 pos = new Vector3(
             Random.Range(-rangeX, rangeX),
-            20f,
+            50f,
             Random.Range(-rangeZ, rangeZ)
         );
 
-        if (Physics.Raycast(pos, Vector3.down, out RaycastHit hit, 50f))
+        if (Physics.Raycast(pos, Vector3.down, out RaycastHit hit, 100f))
         {
-            GameObject enemy = Instantiate(
-            enemyPrefab,
-            hit.point + Vector3.up * 5f,
-            Quaternion.identity
-        );
+            Instantiate(
+                enemyPrefab,
+                hit.point + Vector3.up * 5f,
+                Quaternion.identity
+            );
+        }
+    }
 
-            Debug.Log(enemy.transform.position);
+    public void SpeedUpSpawn()
+    {
+        spawnInterval -= spawnSpeedUp;
 
-            Rigidbody rb = enemy.GetComponent<Rigidbody>();
-
-            if (rb != null)
-            {
-                rb.linearVelocity = Vector3.down * 10f;
-            }
+        if (spawnInterval < minSpawnInterval)
+        {
+            spawnInterval = minSpawnInterval;
         }
     }
 }

@@ -89,6 +89,8 @@ public class Enemy : MonoBehaviour
                 Player player = FindObjectOfType<Player>();
                 player.AddAmmo(1);
 
+                FindObjectOfType<EnemySpawner>().SpeedUpSpawn();
+
                 Destroy(gameObject);
             }
 
